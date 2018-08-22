@@ -190,18 +190,26 @@ network.infoGame(user, (err, res) => {
     if (spaceExpedition) {
       console.log('Сбор с экспедиций');
       
-      jsonXML.userItems.forEach(elem => {
-        
-        /*if (elem.match('~star_(.*?)_activeted~ims')) { //если найдена не активированная экспедиция
-          executeAction($dataUser, substr($vall, 0, -10) . '_starter_quest');
-          
-          "event_arena_0315_starter_quest": [
-            "1"
-          ]
-        }*/
+      Object.keys(jsonXML.userItems[0]).forEach(elem => {
+        if (/star_(.*?)_activeted/.test(elem)) {
+          network.executeAction(`${ elem.slice(0, -10)}_starter_quest`);
+        }
       });
     }
-    
+  
+    /****************************** Collection with colonists ************************************/
+  
+    if (collectionResources) {
+      console.log('Сбор с колонистов');
+      //гермиона
+      const objResource = {
+        allCollect: [ 'colonist_female_1_1', 'colonist_female_1_2', 'colonist_female_1_3', 'colonist_female_1_4', 'colonist_female_1_5', 'colonist_female_2_1', 'colonist_female_2_2', 'colonist_female_2_3', 'colonist_female_2_4', 'colonist_female_2_5', 'colonist_female_3_1', 'colonist_female_3_2', 'colonist_female_3_3', 'colonist_female_3_4', 'colonist_female_3_5', 'colonist_male_1_1', 'colonist_male_1_2', 'colonist_male_1_3', 'colonist_male_1_4', 'colonist_male_1_5', 'colonist_male_2_1', 'colonist_male_2_2', 'colonist_male_2_3', 'colonist_male_2_4', 'colonist_male_2_5', 'colonist_male_3_1', 'colonist_male_3_2', 'colonist_male_3_3', 'colonist_male_3_4', 'colonist_male_3_5', 'citizen_luckycaptain_1', 'officer_1_1', 'officer_1_2', 'officer_1_3', 'officer_2_1', 'officer_2_2', 'officer_2_3', 'offer_tax_robo_1_1', 'offer_tax_robo_2_1', 'offer_tax_robo_3_1', 'robo_officer_1', 'robot_loader_1', 'citizen_robot_war_1', 'citizen_robot_war_2_1', 'scarlett_ney_citizen_1', 'eric_claymore_citizen_double_1', 'pig_1', 'scientist_1_1', 'scientist_2_1', 'scientist_3_1', 'scientist_4_1', 'tax_robo_2_1', 'tax_robo_2_2', 'trash_robo_1_1', 'trash_robo_1_2', 'trash_robo_1_3', 'trash_robo_2_1', 'trash_robo_2_2', 'trash_robo_2_3', 'trash_robo_3_1', 'trash_robo_3_2', 'trash_robo_3_3' ], //запросы для сбора с колонистов
+        allGroupGift: [ 'group_gift_friday', 'group_gift_monday', 'group_gift_saturday', 'group_gift_sunday', 'group_gift_thursday', 'group_gift_tuesday', 'group_gift_wednesday' ], //запросы сбора подарков с офф группы
+        rjGift: ["space_scheme", "space_expendable", "credit", "space_recruits", "ground_expendable", "cordite", "merc_lite", "merc_lite_5", "merc_heavy", "merc_heavy_5" ]
+      }
+      
+      
+    }
     
     
     
