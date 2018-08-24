@@ -30,7 +30,7 @@ if (start) {
       }
       
       const jsonXML = {
-        userItems: userJson.items,
+        userItems: userJson.items[0],
         userTimer: userJson.timings[0].timer,
         userLastEnter: userJson.last_enter[0].$.time,
         userContracts: userJson.contracts[0].contract, //производтство на заводах, нужен ID от них
@@ -59,22 +59,22 @@ if (start) {
         console.log('Сбор БП');
         //массив боеприпасов на земле и в космосе
         const ammo = {
-          air_strike: jsonXML.userItems[0].air_strike[0],
-          medicaments: jsonXML.userItems[0].medicaments[0],
-          gravibomb: jsonXML.userItems[0].gravibomb[0],
-          shields: jsonXML.userItems[0].shields[0]
+          air_strike: jsonXML.userItems.air_strike[0],
+          medicaments: jsonXML.userItems.medicaments[0],
+          gravibomb: jsonXML.userItems.gravibomb[0],
+          shields: jsonXML.userItems.shields[0]
         };
         
         const ammoSpace = {
-          repair_drones: jsonXML.userItems[0].repair_drones[0],
-          space_mines: jsonXML.userItems[0].space_mines[0],
-          adaptive_shield: jsonXML.userItems[0].adaptive_shield[0],
-          ecm: jsonXML.userItems[0].ecm[0]
+          repair_drones: jsonXML.userItems.repair_drones[0],
+          space_mines: jsonXML.userItems.space_mines[0],
+          adaptive_shield: jsonXML.userItems.adaptive_shield[0],
+          ecm: jsonXML.userItems.ecm[0]
         };
         
         //определеляем лимит ресурсов для производства БП
-        const corditMax = jsonXML.userItems[0].cordite[0] >= corditLimit;
-        const cristalMax = jsonXML.userItems[0].crystal[0] >= cristalLimit;
+        const corditMax = jsonXML.userItems.cordite[0] >= corditLimit;
+        const cristalMax = jsonXML.userItems.crystal[0] >= cristalLimit;
         
         if (!corditMax) { //если лимит достигнут
           delete (ammo.gravibomb); //все чему нужен кордит
@@ -123,7 +123,7 @@ if (start) {
           const buildTypeMetal = buildType['plant_metal'];
           const buildLevelMetal = buildLevel[buildTypeMetal];
           
-          if (!jsonXML.userItems[0].achievement_collection_tech_support[0]) {
+          if (!jsonXML.userItems.achievement_collection_tech_support[0]) {
             network.startResourcesTech('produce_metal_' + buildLevelMetal, buildTypeMetal);
           } else {
             network.startResources('produce_metal_' + buildLevelMetal, buildTypeMetal);
@@ -140,7 +140,7 @@ if (start) {
           const buildTypeCrystal = buildType['plant_crystal'];
           const buildLevelCrystal = buildLevel[buildTypeCrystal];
           
-          if (!jsonXML.userItems[0].achievement_collection_tech_support[0]) {
+          if (!jsonXML.userItems.achievement_collection_tech_support[0]) {
             network.startResourcesTech('produce_crystal_' + buildLevelCrystal, buildTypeCrystal);
           } else {
             network.startResources('produce_crystal_' + buildLevelCrystal, buildTypeCrystal);
@@ -191,7 +191,7 @@ if (start) {
       if (spaceExpedition) {
         console.log('Сбор с экспедиций');
         
-        Object.keys(jsonXML.userItems[0]).forEach(elem => {
+        Object.keys(jsonXML.userItems).forEach(elem => {
           if (/star_(.*?)_activeted/.test(elem)) {
             network.executeAction(`${ elem.slice(0, -10)}_starter_quest`);
           }
@@ -211,7 +211,7 @@ if (start) {
         
         
         objResource.allCollect.forEach(elem => { //собрать ресурсы с колонистов
-          if (!timeGather[`${ elem }_produce_timing`] && Object.keys(jsonXML.userItems[0]).includes(elem)) {
+          if (!timeGather[`${ elem }_produce_timing`] && jsonXML.userItems[elem]) {
             network.executeAction(`${ elem }_producer`);
           }
         });
@@ -262,7 +262,7 @@ if (start) {
       if (shopAssassin
         && buildType['mercenary_camp']
         && (!timeGather['mercenary_camp_global_timing']
-          || !Object.keys(jsonXML.userItems[0]).includes('mercenary_camp_pack_1_purchased'))
+          || !jsonXML.userItems['mercenary_camp_pack_1_purchased'])
       ) { //если таймер наемников отсутствует и ни один наемник не куплен
         console.log('Покупка наемников');
         
