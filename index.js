@@ -1,5 +1,4 @@
 const network = require('./lib/network');
-const worker = require('./lib/fileWorker');
 const { user } = require('./lib/config');
 const helpers = require('./lib/helpers');
 
@@ -15,6 +14,7 @@ const corditLimit = 3000; //предел расхода кордита на БП
 const cristalLimit = 0; //предел кристалов на БП
 
 let sendMaps;
+//sendMaps = "https://vk.com/app3558212_305079119?request_id=10007&request_key=in_login%3A305079119-interaction%3Aconstruction";
 
 if (start) {
   network.infoGame(user, (err, res) => {
@@ -36,7 +36,6 @@ if (start) {
         userContracts: userJson.contracts[0].contract, //производтство на заводах, нужен ID от них
         userBuildings: userJson.buildings[0].building
       };
-      //console.log(jsonXML)
       
       const build = {};
       
@@ -84,8 +83,8 @@ if (start) {
         
         jsonXML.userContracts.forEach(elem => {
           const contractsAll = elem.$;
-          const findEngineering = helpers.filterBy.objAttach(build, 'type', 'space_engineering')[0];
-          const findFactory = helpers.filterBy.objAttach(build, 'type', 'factory')[0];
+          const findEngineering = helpers.objAttach(build, 'type', 'space_engineering')[0];
+          const findFactory = helpers.objAttach(build, 'type', 'factory')[0];
           
           if (corditMax && findEngineering.length) { //если лимит кордита не достигнут
             network.collectContract(contractsAll.id); //сбор БП
@@ -114,14 +113,14 @@ if (start) {
           }
         });
         
-        const plantMetal = helpers.filterBy.objAttach(build, 'type', 'plant_metal')[0];
-        const checkContractsMetal = helpers.filterBy.objAttach(contractsCollect, 'zeroContract', plantMetal);
+        const plantMetal = helpers.objAttach(build, 'type', 'plant_metal')[0];
+        const checkContractsMetal = helpers.objAttach(contractsCollect, 'zeroContract', plantMetal);
         
         if (checkContractsMetal === 0 || checkContractsMetal === null) {
-          const sendContracts = helpers.filterBy.objAttach(contractsCollect, 'id', plantMetal);
+          const sendContracts = helpers.objAttach(contractsCollect, 'id', plantMetal);
           network.collectContract(sendContracts);
           
-          const buildTypeMetal = helpers.filterBy.objAttach(build, 'type', 'plant_metal')[0];
+          const buildTypeMetal = helpers.objAttach(build, 'type', 'plant_metal')[0];
           const buildLevelMetal = build[buildTypeMetal].level;
           
           if (!jsonXML.userItems[0].achievement_collection_tech_support[0]) {
@@ -131,14 +130,14 @@ if (start) {
           }
         }
         
-        const plantCrystal = helpers.filterBy.objAttach(build, 'type', 'plant_crystal')[0];
-        const checkContractsCrystal = helpers.filterBy.objAttach(contractsCollect, 'zeroContract', plantCrystal);
+        const plantCrystal = helpers.objAttach(build, 'type', 'plant_crystal')[0];
+        const checkContractsCrystal = helpers.objAttach(contractsCollect, 'zeroContract', plantCrystal);
         
         if (!checkContractsCrystal.length) {
-          const sendContractsCrystal = helpers.filterBy.objAttach(contractsCollect, 'id', plantCrystal);
+          const sendContractsCrystal = helpers.objAttach(contractsCollect, 'id', plantCrystal);
           network.collectContract(sendContractsCrystal);
           
-          const buildTypeCrystal = helpers.filterBy.objAttach(build, 'type', 'plant_crystal')[0];
+          const buildTypeCrystal = helpers.objAttach(build, 'type', 'plant_crystal')[0];
           const buildLevelCrystal = build[buildTypeCrystal].level;
           
           if (!jsonXML.userItems[0].achievement_collection_tech_support[0]) {
@@ -148,39 +147,39 @@ if (start) {
           }
         }
         
-        const plantFuel = helpers.filterBy.objAttach(build, 'type', 'plant_fuel')[0];
-        const checkContractsFuel = helpers.filterBy.objAttach(contractsCollect, 'zeroContract', plantFuel);
+        const plantFuel = helpers.objAttach(build, 'type', 'plant_fuel')[0];
+        const checkContractsFuel = helpers.objAttach(contractsCollect, 'zeroContract', plantFuel);
         
         if (!checkContractsFuel.length) {
-          const sendContractsFuel = helpers.filterBy.objAttach(contractsCollect, 'id', plantFuel);
+          const sendContractsFuel = helpers.objAttach(contractsCollect, 'id', plantFuel);
           network.collectContract(sendContractsFuel);
           
-          const buildTypeFuel = helpers.filterBy.objAttach(build, 'type', 'plant_fuel')[0];
+          const buildTypeFuel = helpers.objAttach(build, 'type', 'plant_fuel')[0];
           const buildLevelFuel = build[buildTypeFuel].level;
           network.startResources('produce_fuel_' + buildLevelFuel, buildTypeFuel);
         }
         
-        const plantPlatform = helpers.filterBy.objAttach(build, 'type', 'space_mine_platform')[0];
-        const checkContractsPlatform = helpers.filterBy.objAttach(contractsCollect, 'zeroContract', plantPlatform);
+        const plantPlatform = helpers.objAttach(build, 'type', 'space_mine_platform')[0];
+        const checkContractsPlatform = helpers.objAttach(contractsCollect, 'zeroContract', plantPlatform);
         
         if (plantPlatform) { //если платформы кордита существуют
           if (!checkContractsPlatform.length) {
-            const sendContractsPlatform = helpers.filterBy.objAttach(contractsCollect, 'id', plantPlatform);
+            const sendContractsPlatform = helpers.objAttach(contractsCollect, 'id', plantPlatform);
             network.collectContract(sendContractsPlatform);
             
-            const buildTypePlatform = helpers.filterBy.objAttach(build, 'type', 'space_mine_platform')[0];
+            const buildTypePlatform = helpers.objAttach(build, 'type', 'space_mine_platform')[0];
             const buildLevelPlatform = build[buildTypePlatform].level;
             network.startResources('produce_cordite_' + buildLevelPlatform, buildTypePlatform);
           }
           
-          const plantPlatform2 = helpers.filterBy.objAttach(build, 'type', 'space_mine_platform_2')[0];
-          const checkContractsPlatform2 = helpers.filterBy.objAttach(contractsCollect, 'zeroContract', plantPlatform2);
+          const plantPlatform2 = helpers.objAttach(build, 'type', 'space_mine_platform_2')[0];
+          const checkContractsPlatform2 = helpers.objAttach(contractsCollect, 'zeroContract', plantPlatform2);
           
           if (!checkContractsPlatform2.length) {
-            const sendContractsPlatform2 = helpers.filterBy.objAttach(contractsCollect, 'id', plantPlatform);
+            const sendContractsPlatform2 = helpers.objAttach(contractsCollect, 'id', plantPlatform);
             network.collectContract(sendContractsPlatform2);
             
-            const buildTypePlatform2 = helpers.filterBy.objAttach(build, 'type', 'space_mine_platform_2')[0];
+            const buildTypePlatform2 = helpers.objAttach(build, 'type', 'space_mine_platform_2')[0];
             const buildLevelPlatform2 = build[buildTypePlatform2].level;
             network.startResources('produce_cordite_second_' + buildLevelPlatform2, buildTypePlatform2);
           }
@@ -203,28 +202,9 @@ if (start) {
       
       if (collectionResources) {
         console.log('Сбор с колонистов');
-        //гермиона
+        
         const objResource = {
-          allCollect: [
-            'colonist_female_1_1', 'colonist_female_1_2', 'colonist_female_1_3', 'colonist_female_1_4', 'colonist_female_1_5',
-            'colonist_female_2_1', 'colonist_female_2_2', 'colonist_female_2_3', 'colonist_female_2_4', 'colonist_female_2_5',
-            'colonist_female_3_1', 'colonist_female_3_2', 'colonist_female_3_3', 'colonist_female_3_4', 'colonist_female_3_5',
-            'colonist_male_1_1', 'colonist_male_1_2', 'colonist_male_1_3', 'colonist_male_1_4', 'colonist_male_1_5',
-            'colonist_male_2_1', 'colonist_male_2_2', 'colonist_male_2_3', 'colonist_male_2_4', 'colonist_male_2_5',
-            'colonist_male_3_1', 'colonist_male_3_2', 'colonist_male_3_3', 'colonist_male_3_4', 'colonist_male_3_5',
-            'citizen_luckycaptain_1',
-            'officer_1_1', 'officer_1_2', 'officer_1_3',
-            'officer_2_1', 'officer_2_2', 'officer_2_3',
-            'xenobiologist_1_1','xenobiologist_2_1', 'xenobiologist_3_1','xenobiologist_4_1',
-            'offer_tax_robo_1_1', 'offer_tax_robo_2_1', 'offer_tax_robo_3_1',
-            'robo_officer_1', 'robot_loader_1', 'citizen_robot_war_1', 'citizen_robot_war_2_1',
-            'scarlett_ney_citizen_1', 'eric_claymore_citizen_double_1', 'pig_1',
-            'scientist_1_1', 'scientist_2_1', 'scientist_3_1', 'scientist_4_1',
-            'tax_robo_2_1', 'tax_robo_2_2',
-            'trash_robo_1_1', 'trash_robo_1_2', 'trash_robo_1_3',
-            'trash_robo_2_1', 'trash_robo_2_2', 'trash_robo_2_3',
-            'trash_robo_3_1', 'trash_robo_3_2', 'trash_robo_3_3'
-          ], //запросы для сбора с колонистов
+          allCollect: [ 'colonist_female_1_1', 'colonist_female_1_2', 'colonist_female_1_3', 'colonist_female_1_4', 'colonist_female_1_5', 'colonist_female_2_1', 'colonist_female_2_2', 'colonist_female_2_3', 'colonist_female_2_4', 'colonist_female_2_5', 'colonist_female_3_1', 'colonist_female_3_2', 'colonist_female_3_3', 'colonist_female_3_4', 'colonist_female_3_5', 'colonist_male_1_1', 'colonist_male_1_2', 'colonist_male_1_3', 'colonist_male_1_4', 'colonist_male_1_5', 'colonist_male_2_1', 'colonist_male_2_2', 'colonist_male_2_3', 'colonist_male_2_4', 'colonist_male_2_5', 'colonist_male_3_1', 'colonist_male_3_2', 'colonist_male_3_3', 'colonist_male_3_4', 'colonist_male_3_5', 'citizen_luckycaptain_1', 'officer_1_1', 'officer_1_2', 'officer_1_3', 'officer_2_1', 'officer_2_2', 'officer_2_3', 'xenobiologist_1_1','xenobiologist_2_1', 'xenobiologist_3_1','xenobiologist_4_1', 'offer_tax_robo_1_1', 'offer_tax_robo_2_1', 'offer_tax_robo_3_1', 'robo_officer_1', 'robot_loader_1', 'citizen_robot_war_1', 'citizen_robot_war_2_1', 'scarlett_ney_citizen_1', 'eric_claymore_citizen_double_1', 'pig_1', 'scientist_1_1', 'scientist_2_1', 'scientist_3_1', 'scientist_4_1', 'tax_robo_2_1', 'tax_robo_2_2', 'trash_robo_1_1', 'trash_robo_1_2', 'trash_robo_1_3', 'trash_robo_2_1', 'trash_robo_2_2', 'trash_robo_2_3', 'trash_robo_3_1', 'trash_robo_3_2', 'trash_robo_3_3' ], //запросы для сбора с колонистов
           allGroupGift: ['group_gift_friday', 'group_gift_monday', 'group_gift_saturday', 'group_gift_sunday', 'group_gift_thursday', 'group_gift_tuesday', 'group_gift_wednesday'], //запросы сбора подарков с офф группы
           rjGift: ["space_scheme", "space_expendable", "credit", "space_recruits", "ground_expendable", "cordite", "merc_lite", "merc_lite_5", "merc_heavy", "merc_heavy_5"]
         };
@@ -280,7 +260,7 @@ if (start) {
       /****************************** Shop Assassin ************************************/
   
       if (shopAssassin
-        && helpers.filterBy.objAttach(build, 'type', 'mercenary_camp')
+        && helpers.objAttach(build, 'type', 'mercenary_camp')
         && (!timeGather.includes('mercenary_camp_global_timing')
           || !Object.keys(jsonXML.userItems[0]).includes('mercenary_camp_pack_1_purchased'))
       ) { //если таймер наемников отсутствует и ни один наемник не куплен
@@ -314,8 +294,6 @@ if (start) {
       }
   
       /****************************** Send map ************************************/
-  
-      // const sendMaps = "https://vk.com/app3558212_305079119?request_id=10007&request_key=in_login%3A305079119-interaction%3Aconstruction";
       
       if (sendMaps) {
         console.log('Послал чертежи');
