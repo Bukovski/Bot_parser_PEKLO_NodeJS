@@ -14,6 +14,8 @@ const start = true; //запуск выполнения парсера
 const corditLimit = 3000; //предел расхода кордита на БП
 const cristalLimit = 0; //предел кристалов на БП
 
+let sendMaps;
+
 if (start) {
   network.infoGame(user, (err, res) => {
     if (err) return console.error(err);
@@ -274,7 +276,9 @@ if (start) {
           network.executeAction('tax9_quest');
         }
       }
-      
+  
+      /****************************** Shop Assassin ************************************/
+  
       if (shopAssassin
         && helpers.filterBy.objAttach(build, 'type', 'mercenary_camp')
         && (!timeGather.includes('mercenary_camp_global_timing')
@@ -308,25 +312,32 @@ if (start) {
         network.executeAction('mercenary_camp_pack_14_item_9_buy');
         network.executeAction('mercenary_camp_pack_14_item_10_buy');
       }
-      
-      const sendMaps = "https://vk.com/app3558212_8304102?request_id=10014&request_key=in_login%3A8304102-interaction%3Aevent_turret_orbital_hit"
+  
+      /****************************** Send map ************************************/
+  
+      // const sendMaps = "https://vk.com/app3558212_305079119?request_id=10007&request_key=in_login%3A305079119-interaction%3Aconstruction";
       
       if (sendMaps) {
         console.log('Послал чертежи');
         
         let sendMapsType;
-        
-        if (/request_key=interaction/.test(sendMaps)) {
+    
+        if (sendMaps.includes('request_key=interaction')) {
           sendMapsType = sendMaps.match(/interaction%3A(.*?)-in_/);
         } else {
-          sendMapsType = sendMaps.match(/interaction%3A(.*?)/);
+          sendMapsType = sendMaps.match(/interaction%3A(.*?)$/);
         }
-        const sendMapsIdUser = sendMaps.match(/app3558212_(.*?)?/);
-        
-        network.sendMap(sendMapsType[1], sendMapsIdUser[1], (err) => {
-          console.log('200 MAP -->', err);
+    
+        const sendMapsIdUser = sendMaps.match(/app3558212_(.*?)[?]/);
+    
+        network.sendMap(sendMapsType[1], sendMapsIdUser[1], (response) => {
+          if (response.includes('error')) {
+            console.log('Чертеж не отправился');
+          } else {
+            console.log('Чертежи', response);
+          }
         });
-        
+    
       }
       
       
