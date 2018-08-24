@@ -88,11 +88,11 @@ if (start) {
           
           if (corditMax && findEngineering.length) { //если лимит кордита не достигнут
             network.collectContract(contractsAll.id); //сбор БП
-            network.startContract(helpers.sortBy.objValue(ammoSpace)[0], findEngineering); //заказ БП
+            network.startContract(helpers.sortObjValue(ammoSpace)[0], findEngineering); //заказ БП
           }
           if (cristalMax && findFactory.length) { //если лимит кристалов не достигнут
             network.collectContract(contractsAll.id); //сбор БП
-            network.startContract(helpers.sortBy.objValue(ammo)[0], findFactory); //заказ БП
+            network.startContract(helpers.sortObjValue(ammo)[0], findFactory); //заказ БП
           }
         })
       }
@@ -114,10 +114,10 @@ if (start) {
         });
         
         const plantMetal = buildType['plant_metal'];
-        const checkContractsMetal = helpers.objAttach(contractsCollect, 'zeroContract', plantMetal);
+        const checkContractsMetal = contractsCollect[plantMetal].zeroContract;
         
         if (checkContractsMetal === 0 || checkContractsMetal === null) {
-          const sendContracts = helpers.objAttach(contractsCollect, 'id', plantMetal);
+          const sendContracts = contractsCollect[plantMetal].id;
           network.collectContract(sendContracts);
           
           const buildTypeMetal = buildType['plant_metal'];
@@ -131,10 +131,10 @@ if (start) {
         }
         
         const plantCrystal = buildType['plant_crystal'];
-        const checkContractsCrystal = helpers.objAttach(contractsCollect, 'zeroContract', plantCrystal);
+        const checkContractsCrystal = contractsCollect[plantCrystal].zeroContract;
         
         if (!checkContractsCrystal.length) {
-          const sendContractsCrystal = helpers.objAttach(contractsCollect, 'id', plantCrystal);
+          const sendContractsCrystal = contractsCollect[plantCrystal].id;
           network.collectContract(sendContractsCrystal);
           
           const buildTypeCrystal = buildType['plant_crystal'];
@@ -148,10 +148,10 @@ if (start) {
         }
         
         const plantFuel = buildType['plant_fuel'];
-        const checkContractsFuel = helpers.objAttach(contractsCollect, 'zeroContract', plantFuel);
+        const checkContractsFuel = contractsCollect[plantFuel].zeroContract;
         
         if (!checkContractsFuel.length) {
-          const sendContractsFuel = helpers.objAttach(contractsCollect, 'id', plantFuel);
+          const sendContractsFuel = contractsCollect[plantFuel].id;
           network.collectContract(sendContractsFuel);
           
           const buildTypeFuel = buildType['plant_fuel'];
@@ -160,11 +160,11 @@ if (start) {
         }
         
         const plantPlatform = buildType['space_mine_platform'];
-        const checkContractsPlatform = helpers.objAttach(contractsCollect, 'zeroContract', plantPlatform);
+        const checkContractsPlatform = contractsCollect[plantPlatform].zeroContract;
         
         if (plantPlatform) { //если платформы кордита существуют
           if (!checkContractsPlatform.length) {
-            const sendContractsPlatform = helpers.objAttach(contractsCollect, 'id', plantPlatform);
+            const sendContractsPlatform = contractsCollect[plantPlatform].id;
             network.collectContract(sendContractsPlatform);
             
             const buildTypePlatform = buildType['space_mine_platform'];
@@ -173,10 +173,10 @@ if (start) {
           }
           
           const plantPlatform2 = buildType['space_mine_platform_2'];
-          const checkContractsPlatform2 = helpers.objAttach(contractsCollect, 'zeroContract', plantPlatform2);
+          const checkContractsPlatform2 = contractsCollect[plantPlatform2].zeroContract;
           
           if (!checkContractsPlatform2.length) {
-            const sendContractsPlatform2 = helpers.objAttach(contractsCollect, 'id', plantPlatform);
+            const sendContractsPlatform2 = contractsCollect[plantPlatform2].id;
             network.collectContract(sendContractsPlatform2);
             
             const buildTypePlatform2 = buildType['space_mine_platform_2'];
@@ -243,7 +243,7 @@ if (start) {
         
         
         if (!timeGather['taxes_production_timing']) {
-          console.log('Сбор кредитов с базы')
+          console.log('Сбор кредитов с базы');
           
           network.executeAction('tax1_quest');
           network.executeAction('tax2_quest');
