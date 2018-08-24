@@ -37,17 +37,15 @@ if (start) {
         userBuildings: userJson.buildings[0].building
       };
       
-      const build = {};
+      const buildType = {};
+      const buildLevel = {};
       
       jsonXML.userBuildings.forEach(elem => {
         const buildingsAll = elem.$;
         
-        build[buildingsAll.id] = {
-          type: buildingsAll.type, //[10]=>'factory', [160]=>'space_engineering'
-          level: buildingsAll.level //уровень зданий которые подставляем в производство ресурсов
-        }
+        buildType[buildingsAll.type] = buildingsAll.id;
+        buildLevel[buildingsAll.id] = buildingsAll.level;
       });
-      // console.log(build);
       
       const timeGather = helpers.sortBy.arr(jsonXML.userTimer.map(elem => {
         return elem.$.type
@@ -83,8 +81,8 @@ if (start) {
         
         jsonXML.userContracts.forEach(elem => {
           const contractsAll = elem.$;
-          const findEngineering = helpers.objAttach(build, 'type', 'space_engineering')[0];
-          const findFactory = helpers.objAttach(build, 'type', 'factory')[0];
+          const findEngineering = buildType['space_engineering'];
+          const findFactory = buildType['factory'];
           
           if (corditMax && findEngineering.length) { //если лимит кордита не достигнут
             network.collectContract(contractsAll.id); //сбор БП
@@ -113,15 +111,15 @@ if (start) {
           }
         });
         
-        const plantMetal = helpers.objAttach(build, 'type', 'plant_metal')[0];
+        const plantMetal = buildType['plant_metal'];
         const checkContractsMetal = helpers.objAttach(contractsCollect, 'zeroContract', plantMetal);
         
         if (checkContractsMetal === 0 || checkContractsMetal === null) {
           const sendContracts = helpers.objAttach(contractsCollect, 'id', plantMetal);
           network.collectContract(sendContracts);
           
-          const buildTypeMetal = helpers.objAttach(build, 'type', 'plant_metal')[0];
-          const buildLevelMetal = build[buildTypeMetal].level;
+          const buildTypeMetal = buildType['plant_metal'];
+          const buildLevelMetal = buildLevel[buildTypeMetal];
           
           if (!jsonXML.userItems[0].achievement_collection_tech_support[0]) {
             network.startResourcesTech('produce_metal_' + buildLevelMetal, buildTypeMetal);
@@ -130,15 +128,15 @@ if (start) {
           }
         }
         
-        const plantCrystal = helpers.objAttach(build, 'type', 'plant_crystal')[0];
+        const plantCrystal = buildType['plant_crystal'];
         const checkContractsCrystal = helpers.objAttach(contractsCollect, 'zeroContract', plantCrystal);
         
         if (!checkContractsCrystal.length) {
           const sendContractsCrystal = helpers.objAttach(contractsCollect, 'id', plantCrystal);
           network.collectContract(sendContractsCrystal);
           
-          const buildTypeCrystal = helpers.objAttach(build, 'type', 'plant_crystal')[0];
-          const buildLevelCrystal = build[buildTypeCrystal].level;
+          const buildTypeCrystal = buildType['plant_crystal'];
+          const buildLevelCrystal = buildLevel[buildTypeCrystal];
           
           if (!jsonXML.userItems[0].achievement_collection_tech_support[0]) {
             network.startResourcesTech('produce_crystal_' + buildLevelCrystal, buildTypeCrystal);
@@ -147,19 +145,19 @@ if (start) {
           }
         }
         
-        const plantFuel = helpers.objAttach(build, 'type', 'plant_fuel')[0];
+        const plantFuel = buildType['plant_fuel'];
         const checkContractsFuel = helpers.objAttach(contractsCollect, 'zeroContract', plantFuel);
         
         if (!checkContractsFuel.length) {
           const sendContractsFuel = helpers.objAttach(contractsCollect, 'id', plantFuel);
           network.collectContract(sendContractsFuel);
           
-          const buildTypeFuel = helpers.objAttach(build, 'type', 'plant_fuel')[0];
-          const buildLevelFuel = build[buildTypeFuel].level;
+          const buildTypeFuel = buildType['plant_fuel'];
+          const buildLevelFuel = buildLevel[buildTypeFuel];
           network.startResources('produce_fuel_' + buildLevelFuel, buildTypeFuel);
         }
         
-        const plantPlatform = helpers.objAttach(build, 'type', 'space_mine_platform')[0];
+        const plantPlatform = buildType['space_mine_platform'];
         const checkContractsPlatform = helpers.objAttach(contractsCollect, 'zeroContract', plantPlatform);
         
         if (plantPlatform) { //если платформы кордита существуют
@@ -167,20 +165,20 @@ if (start) {
             const sendContractsPlatform = helpers.objAttach(contractsCollect, 'id', plantPlatform);
             network.collectContract(sendContractsPlatform);
             
-            const buildTypePlatform = helpers.objAttach(build, 'type', 'space_mine_platform')[0];
-            const buildLevelPlatform = build[buildTypePlatform].level;
+            const buildTypePlatform = buildType['space_mine_platform'];
+            const buildLevelPlatform = buildLevel[buildTypePlatform];
             network.startResources('produce_cordite_' + buildLevelPlatform, buildTypePlatform);
           }
           
-          const plantPlatform2 = helpers.objAttach(build, 'type', 'space_mine_platform_2')[0];
+          const plantPlatform2 = buildType['space_mine_platform_2'];
           const checkContractsPlatform2 = helpers.objAttach(contractsCollect, 'zeroContract', plantPlatform2);
           
           if (!checkContractsPlatform2.length) {
             const sendContractsPlatform2 = helpers.objAttach(contractsCollect, 'id', plantPlatform);
             network.collectContract(sendContractsPlatform2);
             
-            const buildTypePlatform2 = helpers.objAttach(build, 'type', 'space_mine_platform_2')[0];
-            const buildLevelPlatform2 = build[buildTypePlatform2].level;
+            const buildTypePlatform2 = buildType['space_mine_platform_2'];
+            const buildLevelPlatform2 = buildLevel[buildTypePlatform2];
             network.startResources('produce_cordite_second_' + buildLevelPlatform2, buildTypePlatform2);
           }
         }
@@ -260,7 +258,7 @@ if (start) {
       /****************************** Shop Assassin ************************************/
   
       if (shopAssassin
-        && helpers.objAttach(build, 'type', 'mercenary_camp')
+        && buildType['mercenary_camp']
         && (!timeGather.includes('mercenary_camp_global_timing')
           || !Object.keys(jsonXML.userItems[0]).includes('mercenary_camp_pack_1_purchased'))
       ) { //если таймер наемников отсутствует и ни один наемник не куплен
@@ -315,11 +313,7 @@ if (start) {
             console.log('Чертежи', response);
           }
         });
-    
       }
-      
-      
     })
-    
   });
 }
