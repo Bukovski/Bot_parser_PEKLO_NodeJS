@@ -47,9 +47,11 @@ if (start) {
         buildLevel[buildingsAll.id] = buildingsAll.level;
       });
       
-      const timeGather = helpers.sortBy.arr(jsonXML.userTimer.map(elem => {
-        return elem.$.type
-      }));
+      const timeGather = {};
+      
+      jsonXML.userTimer.forEach((elem, index) => {
+        return timeGather[elem.$.type] = ++index;
+      });
       
       /****************************** Create ammunition ************************************/
       
@@ -209,7 +211,7 @@ if (start) {
         
         
         objResource.allCollect.forEach(elem => { //собрать ресурсы с колонистов
-          if (!timeGather.includes(`${ elem }_produce_timing`) && Object.keys(jsonXML.userItems[0]).includes(elem)) {
+          if (!timeGather[`${ elem }_produce_timing`] && Object.keys(jsonXML.userItems[0]).includes(elem)) {
             network.executeAction(`${ elem }_producer`);
           }
         });
@@ -225,14 +227,14 @@ if (start) {
             });
           }
           
-          if (!timeGather.includes('citizen_thief_1_produce_timing')) { //сбор с воровки если таймер вышел
+          if (!timeGather['citizen_thief_1_produce_timing']) { //сбор с воровки если таймер вышел
             network.executeAction('citizen_thief_1_producer');
             network.executeAction('thief_thing_randomizer');
             network.executeAction(`thief_sharing_reward_${ ++index }`); //забираем подарок
             network.executeAction(`thief_sharing_reward_${ ++index }_sharing_quest`); //рассказал друзьям о подарке
           }
           
-          if (!timeGather.includes('space_pvp_daily_4_quest_timing')) { //космические бои, сбор и зщапуск квеста
+          if (!timeGather['space_pvp_daily_4_quest_timing']) { //космические бои, сбор и зщапуск квеста
             network.executeAction('space_pvp_daily_4_starter');
             network.executeAction('space_pvp_daily_4');
             network.executeAction('space_pvp_daily_reset');
@@ -240,7 +242,7 @@ if (start) {
         });
         
         
-        if (!timeGather.includes('taxes_production_timing')) {
+        if (!timeGather['taxes_production_timing']) {
           console.log('Сбор кредитов с базы')
           
           network.executeAction('tax1_quest');
@@ -259,7 +261,7 @@ if (start) {
   
       if (shopAssassin
         && buildType['mercenary_camp']
-        && (!timeGather.includes('mercenary_camp_global_timing')
+        && (!timeGather['mercenary_camp_global_timing']
           || !Object.keys(jsonXML.userItems[0]).includes('mercenary_camp_pack_1_purchased'))
       ) { //если таймер наемников отсутствует и ни один наемник не куплен
         console.log('Покупка наемников');
