@@ -187,6 +187,8 @@ terminal.responders.listInfo = () => {
 
 
 terminal.responders.listTimers = () => {
+  moment.locale('ru');
+  
   const timeConversion = (millisec) => {
     const seconds = (millisec / 1).toFixed(1);
     const  minutes = (millisec / (1 * 60)).toFixed(1);
@@ -212,7 +214,6 @@ terminal.responders.listTimers = () => {
   
   const res = getTimer();
   const sortingArr = sortObj(res);
-  moment.locale('ru');
   
   terminal.horizontalLine();
   terminal.centered('TIMERS INFO');

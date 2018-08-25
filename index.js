@@ -28,8 +28,12 @@ let sendMaps;
 //sendMaps = "https://vk.com/app3558212_305079119?request_id=10007&request_key=in_login%3A305079119-interaction%3Aconstruction";
 
 if (start) {
+  
   network.infoGame(user, (err, res) => {
     if (err) return console.error(err);
+    
+    network.update();
+    network.auctionInfo();
     
     helpers.xml(res, (err, json) => {
       if (err) return console.error(err);
