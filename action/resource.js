@@ -18,8 +18,9 @@ module.exports = (jsonXML, buildType, buildLevel) => {
   const checkContractsMetal = contractsCollect[plantMetal];
   
   if (checkContractsMetal === undefined || checkContractsMetal.zeroContract === '0') {
-    const sendContracts = contractsCollect[plantMetal].id;
-    network.collectContract(sendContracts);
+    if (checkContractsMetal) {
+      network.collectContract(checkContractsMetal.id);
+    }
     
     const buildTypeMetal = buildType['plant_metal'];
     const buildLevelMetal = buildLevel[buildTypeMetal];
@@ -36,8 +37,9 @@ module.exports = (jsonXML, buildType, buildLevel) => {
   const checkContractsCrystal = contractsCollect[plantCrystal];
   
   if (checkContractsCrystal === undefined || checkContractsCrystal.zeroContract === '0') {
-    const sendContractsCrystal = contractsCollect[plantCrystal].id;
-    network.collectContract(sendContractsCrystal);
+    if (checkContractsCrystal) {
+      network.collectContract(checkContractsCrystal.id);
+    }
     
     const buildTypeCrystal = buildType['plant_crystal'];
     const buildLevelCrystal = buildLevel[buildTypeCrystal];
@@ -54,8 +56,9 @@ module.exports = (jsonXML, buildType, buildLevel) => {
   const checkContractsFuel = contractsCollect[plantFuel];
   
   if (checkContractsFuel === undefined || checkContractsFuel.zeroContract === '0') {
-    const sendContractsFuel = contractsCollect[plantFuel].id;
-    network.collectContract(sendContractsFuel);
+    if (checkContractsFuel) {
+      network.collectContract(checkContractsFuel.id);
+    }
     
     const buildTypeFuel = buildType['plant_fuel'];
     const buildLevelFuel = buildLevel[buildTypeFuel];
@@ -68,8 +71,9 @@ module.exports = (jsonXML, buildType, buildLevel) => {
   
   if (plantPlatform !== undefined) {
     if (checkContractsPlatform === undefined || checkContractsPlatform.zeroContract === '0') {
-      const sendContractsPlatform = contractsCollect[plantPlatform].id;
-      network.collectContract(sendContractsPlatform);
+      if (checkContractsPlatform) {
+        network.collectContract(checkContractsPlatform.id);
+      }
       
       const buildTypePlatform = buildType['space_mine_platform'];
       const buildLevelPlatform = buildLevel[buildTypePlatform];
@@ -81,8 +85,9 @@ module.exports = (jsonXML, buildType, buildLevel) => {
     const checkContractsPlatform2 = contractsCollect[plantPlatform2];
     
     if (checkContractsPlatform2 === undefined || checkContractsPlatform2.zeroContract === '0') {
-      const sendContractsPlatform2 = contractsCollect[plantPlatform2].id;
-      network.collectContract(sendContractsPlatform2);
+      if (checkContractsPlatform2) {
+        network.collectContract(checkContractsPlatform2.id);
+      }
       
       const buildTypePlatform2 = buildType['space_mine_platform_2'];
       const buildLevelPlatform2 = buildLevel[buildTypePlatform2];

@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_PATH=./ NODE_ENV=production node index.js"
+    "start": "NODE_PATH=./ NODE_ENV=production node index.js",
+    "develop": "NODE_PATH=./ node index.js",
+    "debug": "NODE_PATH=./ NODE_ENV=production node --inspect index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "moment": "^2.22.2",
     "request": "^2.88.0",
     "xml2js": "^0.4.19"
   }

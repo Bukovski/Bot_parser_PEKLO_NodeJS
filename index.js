@@ -8,6 +8,7 @@ const colonist = require('action/colonist');
 const assassin = require('action/assassin');
 const sendMap = require('action/sendMap');
 const information = require('interface/information');
+const terminal = require('interface/index');
 
 
 const ammunitionStart = !true; //запуск производства БП
@@ -58,9 +59,18 @@ if (start) {
       });
       
       const timeGather = {};
+      const timersAll = {};
       
       jsonXML.userTimer.forEach((elem, index) => {
-        return timeGather[elem.$.type] = ++index;
+        const timer = elem.$;
+        const timeLeft = timer.finish_time - timer.start_time;
+        
+        timersAll[timeLeft + '-' + timer.id] = {
+          type: timer.type,
+          left: timeLeft,
+          finish: timer.finish_time
+        };
+        return timeGather[timer.type] = ++index;
       });
       
       if (ammunitionStart) {
@@ -99,7 +109,8 @@ if (start) {
         sendMap(sendMaps);
       }
   
-      information(jsonXML);
+      information.set(jsonXML, timersAll);
+      setTimeout(() => terminal.init(), 100);
     })
   });
 }
