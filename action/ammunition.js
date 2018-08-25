@@ -1,13 +1,11 @@
 const network = require('lib/network');
 
 
-const corditLimit = 3000; //предел расхода кордита на БП
-const cristalLimit = 0; //предел кристалов на БП
-
 const sortObjValue = (obj) => Object.keys(obj).sort((a, b) => obj[a] - obj[b]);
 
-
-module.exports = (jsonXML, buildType) => {
+module.exports = (jsonXML, buildType, objLimit) => {
+  const { corditLimit, cristalLimit } = objLimit;
+  
   const ammo = {
     air_strike: jsonXML.userItems.air_strike[0],
     medicaments: jsonXML.userItems.medicaments[0],
@@ -23,8 +21,8 @@ module.exports = (jsonXML, buildType) => {
   };
   
   //определеляем лимит ресурсов для производства БП
-  const corditMax = jsonXML.userItems.cordite[0] >= corditLimit;
-  const cristalMax = jsonXML.userItems.crystal[0] >= cristalLimit;
+  const corditMax = jsonXML.userItems['cordite'][0] >= corditLimit;
+  const cristalMax = jsonXML.userItems['crystal'][0] >= cristalLimit;
   
   if (!corditMax) { //если лимит достигнут
     delete (ammo.gravibomb); //все чему нужен кордит
