@@ -3,12 +3,21 @@ const events = require('events');
 const os = require('os');
 const v8 = require('v8');
 const moment = require('moment');
-const { getInfo, getTimer } = require('./information');
+const { getInfo, getTimer } = require('exchanger/information');
+const worker = require('lib/fileWorker');
+const { user } = require('lib/config');
+
 
 class _events extends events {};
 const e = new _events();
 
 const terminal = {};
+
+const _interface = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: ''
+});
 
 
 e.on('help', () => {
@@ -27,8 +36,16 @@ e.on('info', () => {
   terminal.responders.listInfo();
 });
 
-e.on('timers', (str) => {
-  terminal.responders.listTimers(str);
+e.on('timers', () => {
+  terminal.responders.listTimers();
+});
+
+e.on('settings list', () => {
+  terminal.responders.settingsList();
+});
+
+e.on('settings change', (str) => {
+  terminal.responders.settingsChange(str);
 });
 
 
@@ -252,16 +269,107 @@ terminal.responders.listTimers = () => {
 };
 
 
+terminal.responders.settingsList = () => { //capture data entered by the user in the console
+  const dataSettings = worker.getSettings(user);
+  
+  terminal.horizontalLine();
+  terminal.centered('SETTINGS INFO');
+  terminal.horizontalLine();
+  terminal.verticalSpace(2);
+  terminal.horizontalLine();
+  
+  for (let obj in dataSettings) {
+    if (dataSettings.hasOwnProperty(obj)) {
+      const value = dataSettings[obj]; //{ id: 7, name: 'Иванов', age: 27, salary: 500 }
+      let allLine = '';
+  
+      const firstUpper = obj[0].toUpperCase() + obj.slice(1);
+      let line = '     \x1b[33m ' + firstUpper;
+      const padding = 35 - line.length;
+
+      for (let j = 0; j < padding; j++) {
+        line += ' ';
+      }
+      allLine += line + ':\x1b[0m   ' + dataSettings[obj];
+
+      console.log(allLine);
+      terminal.horizontalLine();
+      
+    }
+  }
+  
+  terminal.horizontalLine();
+};
+
+
+terminal.responders.settingsChange = () => {
+  
+  const settingsTranslate = {
+    "ammunitionStart": { name: "Запуск производства БП", type: 'boolean' },
+    "collectionResources": { name: "Запуск сбора с колонистов", type: 'boolean' },
+    "resourceCreate": { name: "Запуск сбора с шахт ресурсов", type: 'boolean' },
+    "shopAssassin": { name: "Покупка наемников", type: 'boolean' },
+    "spaceExpedition": { name: "Экспедиции в космос", type: 'boolean' },
+    "corditLimit": { name: "Предел расхода кордита на БП", type: 'number' },
+    "cristalLimit": { name: "Предел расхода кристалов на БП", type: 'number' }
+  };
+  
+  const checkType = (newData, oldData, type) => {
+    if (type === 'number') {
+      return (typeof +newData === type && !isNaN(newData) && isFinite(newData) && newData.trim().length < 7) ? +newData : oldData;
+    } else if (type === 'boolean') {
+      return (typeof newData === 'string' && /^[+-]?$/.test(newData.trim())) ?
+        (newData.trim() === '+')
+        : oldData;
+    }
+    return oldData;
+  };
+  
+  const dataSettings = worker.getSettings(user);
+  const newObj = {};
+  
+  let objKey = Object.keys(dataSettings);
+  let counter = 0;
+  
+  const recursiveReadLine = function () {
+    if (objKey[counter] === undefined) return worker.set(`settings-${ user.uid }.json`, JSON.stringify(newObj, null, 2)), _interface.question(`   \x1b[33m Данные сохранены`, () => {});
+    
+    const key = objKey[counter];
+    const value = dataSettings[key];
+    const checkObj = settingsTranslate[key];
+  
+    const stringCreate = (checkObj.type === 'boolean') ? (`+ или - сейчас ${ (value === true) ? '+' : '-'}`) : value;
+    
+    _interface.question(`   \x1b[33m ${ checkObj.name } : ${ stringCreate }  ? \x1b[0m > `
+      , (line) => {
+        newObj[key] = (line.length) ? checkType(line, value, checkObj.type) : value;
+    
+        
+        if (objKey.length > counter) return counter++, recursiveReadLine(); //Calling this function again to ask new question
+    });
+    
+    return null;
+  };
+  
+  recursiveReadLine();
+};
+
+
 terminal.processInput = (str) => { //capture data entered by the user in the console
   str = (typeof(str) === 'string' && str.trim().length) ? str.trim() : false;
   
   if (str) {
     const uniqueInputs = [ //command list
-      'help',
-      'exit',
-      'stats',
-      'info',
-      'timers'
+      'help', //---
+      'exit', //+
+      'stats', //+
+      'info', //информация о ресурсах +
+      'timers', //все таймеры в игре +
+      'settings list', //вывести настройки для пользователя
+      'settings change', //изменить настройки
+      'restart', //перезапустить бот
+      'map', //отсылка чертежей
+      'reloaded' //таймер для интервального запуска бота
     ];
     
     let matchFound = false; //if words to be find = true
@@ -285,12 +393,6 @@ terminal.processInput = (str) => { //capture data entered by the user in the con
 
 terminal.init = () => {
   console.log('\x1b[34m%s\x1b[0m','The terminal is running');
-  
-  const _interface = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    prompt: ''
-  });
   
   _interface.prompt();
   
