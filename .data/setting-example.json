@@ -1,0 +1,9 @@
+{
+  "ammunitionStart": true, //запуск производства БП
+  "collectionResources": true, //запуск сбора с колонистов
+  "resourceCreate": true, //запуск сбора с шахт ресурсов
+  "shopAssassin": true, //покупка наемников
+  "spaceExpedition": true, //экспедиции в космос
+  "corditLimit": 3000, //предел расхода кордита на БП
+  "cristalLimit": 0 //предел кристалов на БП
+}

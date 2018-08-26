@@ -1,0 +1,9 @@
+{
+  "ammunitionStart": false,
+  "collectionResources": true,
+  "resourceCreate": true,
+  "shopAssassin": true,
+  "spaceExpedition": false,
+  "corditLimit": 3000,
+  "cristalLimit": 1000
+}
