@@ -3,5 +3,6 @@ node_modules/
 package-lock.json
 
 .data/
+!.data/setting-example.json
 notes/
 lib/config.js
