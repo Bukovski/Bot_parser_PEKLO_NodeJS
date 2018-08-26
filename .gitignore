@@ -2,6 +2,7 @@ node_modules/
 .idea/
 package-lock.json
 
+.data/*
 !.data/setting-example.json
 notes/
 lib/config.js
